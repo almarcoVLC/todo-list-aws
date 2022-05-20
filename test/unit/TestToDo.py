@@ -1,3 +1,4 @@
+# coding=UTF-8
 # from pprint import pprint
 import warnings
 import unittest
