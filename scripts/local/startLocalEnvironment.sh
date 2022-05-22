@@ -1,3 +1,8 @@
+#!/bin/bash
+
+source todo-list-aws/bin/activate
+set -x
+
 ## Creamos red de docker, puede estar creada
 docker network create sam
 
@@ -14,4 +19,4 @@ aws dynamodb create-table --table-name local-TodosDynamoDbTable --attribute-defi
 sam build # también se puede usar sam build --use-container si se dan problemas con las librerías de python
 
 ## Levantar la api en local, en el puerto 8080, dentro de la red de docker sam
-sam local start-api --port 8081 --env-vars ../../localEnvironment.json --docker-network sam --template ../../template.yaml
+sam local start-api --port 8081 --env-vars localEnvironment.json --docker-network sam --template template.yaml
