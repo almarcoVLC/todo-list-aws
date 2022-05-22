@@ -87,6 +87,12 @@ sam build # también se puede usar sam build --use-container si se dan problemas
 sam local start-api --port 8081 --env-vars localEnvironment.json --docker-network sam
 ```
 
+Opcionalmente se puede utilizar el script, que configurará todos los requerimientos relacioados con docker y 
+arrancará sam para el entorno local en el puerto 8081
+```
+.\scripts\local\startLocalEnvironment.sh
+```
+
 ## Consultar logs de las funciones lambda
 
 Se pueden consultar en CloudWath o ejecutando un comando similar al siguiente:
@@ -106,10 +112,12 @@ Se encuentran en la carpeta `test` que tiene la siguiente estructura:
 ```
 Para ejecutar los tests de **integración** es necesario ejecutar los siguientes comandos:
 ```bash
-python -m pip install pytest
-python -m pip install requests
+python3.7 -m pip install pytest
+python3.7 -m pip install requests
 pytest -s test/integration/todoApiTest.py
 ```
+
+**Será necesario tener el entorno local de sam levantado**
 
 Para ejecutar los tests **unitarios** es necesario ejecutar los siguientes comandos:
 ```bash
@@ -122,7 +130,7 @@ python3.7 -m pip install mock==4.0.2
 python3.7 -m pip install coverage==4.5.4
 export PYTHONPATH="${PYTHONPATH}:<directorio de la aplicación>"
 export DYNAMODB_TABLE=todoUnitTestsTable
-python test/unit/TestToDo.py
+python3.7 test/unit/TestToDo.py
 ```
 Otra alternativa es ejecutar los test desde la raíz del proyecto invocando a los scripts alojados dentro de la carpeta pipelines:
 ```bash
@@ -137,8 +145,8 @@ pipelines/PIPELINE-FULL-STAGING/unit_test.sh
 ## pruebas estáticas (seguridad, calidad, complejidad )
 pipelines/PIPELINE-FULL-STAGING/static_test.sh
 
-# Pruebas de integración
-pipelines/common-steps/integration.sh
+# Pruebas de integración - Se requiere una instancia de la aplicación funcionando
+pipelines/common-steps/integration.sh [root_url_todo_app]
 ```
 
 ## Pipelines
