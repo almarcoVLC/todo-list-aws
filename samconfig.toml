@@ -14,7 +14,7 @@ confirm_changeset = true
 [staging]
 [staging.deploy]
 [staging.deploy.parameters]
-stack_name = "todo-list-aws"
+stack_name = "todo-list-aws-staging"
 s3_bucket = "s3-us-east-1-caso-practico-staging-almarco" #Incluir bucket propio
 s3_prefix = "todo-list-aws"
 region = "us-east-1"
@@ -26,7 +26,7 @@ confirm_changeset = true
 [production]
 [production.deploy]
 [production.deploy.parameters]
-stack_name = "todo-list-aws"
+stack_name = "todo-list-aws-production"
 s3_bucket = "s3-us-east-1-caso-practico-production-almarco" #Incluir bucket propio
 s3_prefix = "todo-list-aws"
 region = "us-east-1"
