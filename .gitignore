@@ -5,3 +5,4 @@ tests
 pyenvunittests
 .coverage
 coverage.xml
+.DS_STORE
