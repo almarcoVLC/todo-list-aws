@@ -6,6 +6,7 @@ import json
 import functools
 from botocore.exceptions import ClientError
 
+translate = boto3.client('translate')
 
 def get_table(dynamodb=None):
     if not dynamodb:
@@ -146,3 +147,24 @@ def create_todo_table(dynamodb):
         raise AssertionError()
 
     return table
+    
+def translateToLanguage(textToTranslate, language):
+    
+    print('Original text: ' + textToTranslate)
+    print('Language: ' + language)
+    
+    try:
+         #TODO: Call trasnlation API
+        
+        
+        result = translate.translate_text(Text=textToTranslate, SourceLanguageCode="es", TargetLanguageCode=language)
+        
+        translation = result.get('TranslatedText')
+         
+        print('Translation: ' + translation)
+    
+    except Exception as e:
+        print(str(e))
+        raise ClientError({'Error': {'Code': '400', 'Message': 'Error in translation process'}})
+    else:
+        return translation
