@@ -76,6 +76,7 @@ class TestApi(unittest.TestCase):
             response.status_code, 200, "Error en la petición API a {url}"
         )
         print('End - integration test Add TODO')
+        
     def test_api_gettodo(self):
         print('---------------------------------------')
         print('Starting - integration test Get TODO')
@@ -167,9 +168,10 @@ class TestApi(unittest.TestCase):
             response.status_code, 200, "Error en la petición API a {url}"
         )
         print('End - integration test Update TODO')
+        
     def test_api_deletetodo(self):
         print('---------------------------------------')
-        print('Starting - integration test Delete TODO')
+        print('Starting - integration test Translate TODO')
         #Add TODO
         url = BASE_URL+"/todos"
         data = {
@@ -201,4 +203,52 @@ class TestApi(unittest.TestCase):
             response.status_code, 404, "Error en la petición API a {url}"
         )
         print('End - integration test Delete TODO')
+        
+    def test_api_translate(self):
+        print('---------------------------------------')
+        print('Starting - integration test Translate TODO')
+        
+        #Add TODO
+        url = BASE_URL+"/todos"
+        data = {
+         "text": "hola"
+        }
+        response = requests.post(url, data=json.dumps(data))
+        json_response = response.json()
+        
+        print('Response Add todo: ' + json_response['body'])
+        
+        jsonbody= json.loads(json_response['body'])
+        ID_TODO = jsonbody['id']
+        
+        print ('ID todo para traducir:'+ID_TODO)
+        
+        self.assertEqual(
+            response.status_code, 200, "Error en la petición API a {url}"
+        )
+        self.assertEqual(
+            jsonbody['text'], "hola"
+        )
+        
+        #Delete TODO to restore state
+        response = requests.get(url + '/' + ID_TODO + '/en')
+        self.assertEqual(
+            response.status_code, 200, "Error en la petición API a {url}"
+        )
+        print ('Response Delete Todo:' + str(response))
+        #Test GET TODO
+        url = BASE_URL+"/todos/"+ID_TODO
+        
+        response = requests.get(url)
+        json_response = response.json()
+        
+        print('Response tranlate '+ url+': '+ str(response))
+        
+
+        jsonbody= json.loads(json_response['body'])
+        self.assertEqual(
+            jsonbody['text'], "Hello"
+        )
+        
+        print('End - integration test Taanslate TODO')
     
