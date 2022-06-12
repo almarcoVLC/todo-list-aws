@@ -51,14 +51,14 @@ def get_item(key, dynamodb=None):
         print('Result getItem:'+str(result))
         if 'Item' in result:
             return result['Item']
-   
+
 
 def get_items(dynamodb=None):
     table = get_table(dynamodb)
     # fetch todo from the database
     result = table.scan()
     return result['Items']
-    
+
 
 def put_item(text, dynamodb=None):
     table = get_table(dynamodb)
@@ -163,24 +163,22 @@ def create_todo_table(dynamodb):
     return table
     
     
-def translate_to_language(textToTranslate,
-    targetLanguage,
-    translate=None,
+def translate_to_language(textToTranslate, targetLanguage, translate=None,
     comprehend=None):
 
     print("Original text: " + textToTranslate)
     print("Destination language " + targetLanguage)
-    
+
     try:
         result = get_translate(translate).translate_text(
             Text=textToTranslate,
             SourceLanguageCode=detect_language(textToTranslate, comprehend),
             TargetLanguageCode=targetLanguage)
-        
+
         translation = result.get('TranslatedText')
-         
+
         print("Translation: " + translation)
-    
+
     except ClientError:
         print("Error in trantalation process")
         raise
@@ -198,9 +196,8 @@ def detect_language(text, comprehend=None):
 
         languages = response['Languages']
 
-        languages.sort(key=lambda language: language['Score'],
-            reverse=True)
-        
+        languages.sort(key=lambda language: language['Score'],reverse=True)
+
         print("Main detected language: " + languages[0]['LanguageCode'])
 
     except ClientError:
