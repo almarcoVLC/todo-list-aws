@@ -47,6 +47,8 @@ class TestDatabaseFunctions(unittest.TestCase):
         self.is_local = 'true'
         self.uuid = "123e4567-e89b-12d3-a456-426614174000"
         self.text = "Aprender DevOps y Cloud en la UNIR"
+        self.textTranslate = "hola adiós goodbye"
+        self.expectedTranslation = "hello goodbye goodbye"
 
         from src.todoList import create_todo_table
         self.table = create_todo_table(self.dynamodb)
@@ -273,6 +275,47 @@ class TestDatabaseFunctions(unittest.TestCase):
             print(ex)
         
         print ('End: test_table_exists_error')
+    
+    
+    def test_translate_to_language_todo(self):
+        print ('---------------------')
+        print ('Start: test_translate_to_language_todo')
+        from unittest.mock import Mock
+        from botocore.stub import Stubber
+        from botocore.stub import ANY
+        from src.todoList import translate_to_language
+        
+        #preparamos el Mock del cliente de translate
+        translate = boto3.client('translate', region_name='us-east-1')
+        stubberTranslate = Stubber(translate)
+        translateResponse = {
+            'TranslatedText': self.expectedTranslation,
+            'SourceLanguageCode': 'es',
+            'TargetLanguageCode': 'en'
+        }
+        
+        translateExpectedParams = {'Text':ANY,
+            "SourceLanguageCode":ANY,
+            "TargetLanguageCode":ANY}
+            
+        stubberTranslate.add_response('translate_text', translateResponse, translateExpectedParams)
+        stubberTranslate.activate()
+        
+        #Preparamos el mock del cliente de
+        comprehend = boto3.client('comprehend', region_name='us-east-1')
+        stubberComprehend = Stubber(comprehend)
+        comprehendResponse = {'Languages':[{'LanguageCode':'en','Score': 0.9}]}
+        
+        comprehendExpectedParams = {'Text':ANY}
+            
+        stubberComprehend.add_response('detect_dominant_language', comprehendResponse, comprehendExpectedParams)
+        stubberComprehend.activate()
+      
+        with stubberTranslate, stubberComprehend:
+            result = translate_to_language(self.textTranslate, "en", translate, comprehend)
 
+            self.assertEqual(result, self.expectedTranslation)
+    
+            print ('End: test_translate_to_language_todo')
 if __name__ == '__main__':
     unittest.main()

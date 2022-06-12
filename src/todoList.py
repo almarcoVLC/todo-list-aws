@@ -6,6 +6,9 @@ import json
 import functools
 from botocore.exceptions import ClientError
 
+comprehend_client = boto3.client('comprehend', region_name='us-east-1')
+translate_client = boto3.client('translate', region_name='us-east-1')
+
 
 def get_table(dynamodb=None):
     if not dynamodb:
@@ -19,6 +22,18 @@ def get_table(dynamodb=None):
     # fetch todo from the database
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     return table
+
+
+def get_translate(translate=None):
+    if not translate:
+        return translate_client
+    return translate
+
+
+def get_comprehend(comprehend=None):
+    if not comprehend:
+        return comprehend_client
+    return comprehend
 
 
 def get_item(key, dynamodb=None):
@@ -146,3 +161,53 @@ def create_todo_table(dynamodb):
         raise AssertionError()
 
     return table
+
+
+def translate_to_language(
+            textToTranslate,
+            targetLanguage,
+            translate=None,
+            comprehend=None
+        ):
+
+    print("Original text: " + textToTranslate)
+    print("Destination language " + targetLanguage)
+
+    try:
+        result = get_translate(translate).translate_text(
+            Text=textToTranslate,
+            SourceLanguageCode=detect_language(textToTranslate, comprehend),
+            TargetLanguageCode=targetLanguage)
+
+        translation = result.get('TranslatedText')
+
+        print("Translation: " + translation)
+
+    except ClientError:
+        print("Error in trantalation process")
+        raise
+    else:
+        return translation
+
+
+def detect_language(text, comprehend=None):
+    """
+    Detects main language in the text
+    """
+    try:
+        response = get_comprehend(comprehend).detect_dominant_language(
+            Text=text)
+
+        languages = response['Languages']
+
+        languages.sort(
+            key=lambda language: language['Score'],
+            reverse=True
+        )
+
+        print("Main detected language: " + languages[0]['LanguageCode'])
+
+    except ClientError:
+        raise
+    else:
+        return languages[0]['LanguageCode']
