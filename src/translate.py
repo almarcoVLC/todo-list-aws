@@ -12,7 +12,7 @@ def translate(event, context):
         # update the todo in the database with text translated
         result = todoList.update_item(
             item['id'],
-            todoList.translateToLanguage(item['text'], language),
+            todoList.translate_to_language(item['text'], language),
             item['checked'])
             
         # create a response

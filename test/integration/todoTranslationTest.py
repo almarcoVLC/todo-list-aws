@@ -28,7 +28,7 @@ class TestApi(unittest.TestCase):
         #Add TODO
         url = BASE_URL+"/todos"
         data = {
-         "text": "hola"
+         "text": "hola adiós goodbye"
         }
         response = requests.post(url, data=json.dumps(data))
         json_response = response.json()
@@ -44,7 +44,7 @@ class TestApi(unittest.TestCase):
             response.status_code, 200
         )
         self.assertEqual(
-            jsonbody['text'], "hola"
+            jsonbody['text'], "hola adiós goodbye"
         )
         
         #Translate TODO request
@@ -58,7 +58,7 @@ class TestApi(unittest.TestCase):
         
         #jsonbody= json.loads(json_response['body'])
         self.assertEqual(
-            json_response['text'], "hello"
+            json_response['text'], "hello goodbye goodbye"
         )
         
         print('End - integration test Translate TODO')
