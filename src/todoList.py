@@ -9,6 +9,7 @@ from botocore.exceptions import ClientError
 comprehend_client = boto3.client('comprehend', region_name='us-east-1')
 translate_client = boto3.client('translate', region_name='us-east-1')
 
+
 def get_table(dynamodb=None):
     if not dynamodb:
         URL = os.environ['ENDPOINT_OVERRIDE']
@@ -22,15 +23,18 @@ def get_table(dynamodb=None):
     table = dynamodb.Table(os.environ['DYNAMODB_TABLE'])
     return table
 
+
 def get_translate(translate=None):
     if not translate:
         return translate_client
     return translate
-    
+
+
 def get_comprehend(comprehend=None):
     if not comprehend:
         return comprehend_client
     return comprehend
+
 
 def get_item(key, dynamodb=None):
     table = get_table(dynamodb)
@@ -47,7 +51,7 @@ def get_item(key, dynamodb=None):
         print('Result getItem:'+str(result))
         if 'Item' in result:
             return result['Item']
-            
+   
 
 def get_items(dynamodb=None):
     table = get_table(dynamodb)
@@ -159,7 +163,11 @@ def create_todo_table(dynamodb):
     return table
     
     
-def translate_to_language(textToTranslate, targetLanguage, translate=None, comprehend=None):
+def translate_to_language(textToTranslate,
+    targetLanguage,
+    translate=None,
+    comprehend=None):
+
     print("Original text: " + textToTranslate)
     print("Destination language " + targetLanguage)
     
@@ -178,21 +186,23 @@ def translate_to_language(textToTranslate, targetLanguage, translate=None, compr
         raise
     else:
         return translation
-        
+
 
 def detect_language(text, comprehend=None):
     """
     Detects main language in the text
     """
     try:
-        response = get_comprehend(comprehend).detect_dominant_language(Text=text)
-        
+        response = get_comprehend(comprehend).detect_dominant_language(
+            Text=text)
+
         languages = response['Languages']
-        
-        languages.sort(key=lambda language: language['Score'], reverse=True)
+
+        languages.sort(key=lambda language: language['Score'],
+            reverse=True)
         
         print("Main detected language: " + languages[0]['LanguageCode'])
-        
+
     except ClientError:
         raise
     else:
