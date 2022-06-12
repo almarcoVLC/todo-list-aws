@@ -164,11 +164,11 @@ def create_todo_table(dynamodb):
 
 
 def translate_to_language(
-        textToTranslate,
-        targetLanguage,
-        translate=None,
-        comprehend=None
-    ):
+            textToTranslate,
+            targetLanguage,
+            translate=None,
+            comprehend=None
+        ):
 
     print("Original text: " + textToTranslate)
     print("Destination language " + targetLanguage)
