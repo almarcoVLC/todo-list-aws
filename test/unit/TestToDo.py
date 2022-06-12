@@ -286,7 +286,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         from src.todoList import translate_to_language
         
         #preparamos el Mock del cliente de translate
-        translate = boto3.client('translate')
+        translate = boto3.client('translate', region_name='us-east-1')
         stubberTranslate = Stubber(translate)
         translateResponse = {
             'TranslatedText': self.expectedTranslation,
@@ -302,7 +302,7 @@ class TestDatabaseFunctions(unittest.TestCase):
         stubberTranslate.activate()
         
         #Preparamos el mock del cliente de
-        comprehend = boto3.client('comprehend')
+        comprehend = boto3.client('comprehend', region_name='us-east-1')
         stubberComprehend = Stubber(comprehend)
         comprehendResponse = {'Languages':[{'LanguageCode':'en','Score': 0.9}]}
         
