@@ -163,8 +163,12 @@ def create_todo_table(dynamodb):
     return table
 
 
-def translate_to_language(textToTranslate, targetLanguage, translate=None,
-        comprehend=None):
+def translate_to_language(
+        textToTranslate,
+        targetLanguage,
+        translate=None,
+        comprehend=None
+    ):
 
     print("Original text: " + textToTranslate)
     print("Destination language " + targetLanguage)
@@ -196,7 +200,10 @@ def detect_language(text, comprehend=None):
 
         languages = response['Languages']
 
-        languages.sort(key=lambda language: language['Score'], reverse=True)
+        languages.sort(
+            key=lambda language: language['Score'],
+            reverse=True
+        )
 
         print("Main detected language: " + languages[0]['LanguageCode'])
 
