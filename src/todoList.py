@@ -185,7 +185,7 @@ def detect_language(text, comprehend=None):
     Detects main language in the text
     """
     try:
-        response = comprehend_client.detect_dominant_language(Text=text)
+        response = get_comprehend(comprehend).detect_dominant_language(Text=text)
         
         languages = response['Languages']
         
